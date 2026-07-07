@@ -12,6 +12,16 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
+
+
+app.use(cors({
+  origin: '*', // Permite que cualquier dominio (incluido Vercel) se conecte
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+
 // Seguridad y utilidades base
 app.use(helmet());
 app.use(
