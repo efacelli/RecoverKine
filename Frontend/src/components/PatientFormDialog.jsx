@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Trash2 } from 'lucide-react';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/Dialog';
 import { Button } from './ui/Button';
 import { Input, Label, Textarea } from './ui/Input';
@@ -14,7 +14,7 @@ const EMPTY_FORM = {
   observaciones: '',
 };
 
-export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit }) {
+export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit, onDelete }) {
   const { showToast } = useToast();
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
@@ -140,7 +140,21 @@ export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit }) {
           />
         </div>
 
-        <DialogFooter>
+        <DialogFooter className={isEditing ? 'sm:justify-between' : undefined}>
+          {isEditing && onDelete && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="mr-auto text-destructive hover:bg-destructive/10"
+              onClick={() => {
+                onClose();
+                onDelete(patientToEdit);
+              }}
+            >
+              <Trash2 size={16} />
+              Eliminar paciente
+            </Button>
+          )}
           <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>

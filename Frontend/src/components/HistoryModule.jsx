@@ -23,6 +23,7 @@ export function HistoryModule() {
               <option value="IGNACIO">Ignacio</option>
               <option value="MARIANO">Mariano</option>
               <option value="TOBIAS">Tobias</option>
+              <option value="ANTONELLA">Antonella</option>
             </Select>
           </div>
           <div className="space-y-1.5">

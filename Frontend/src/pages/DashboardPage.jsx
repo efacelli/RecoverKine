@@ -4,7 +4,6 @@ import { MainLayout } from '../layouts/MainLayout';
 import { StatsCards } from '../components/StatsCards';
 import { PatientTable } from '../components/PatientTable';
 import { PatientFormDialog } from '../components/PatientFormDialog';
-import { DecrementDialog } from '../components/DecrementDialog';
 import { SameDayWarningDialog } from '../components/SameDayWarningDialog';
 import { RenewDialog } from '../components/RenewDialog';
 import { ReminderDialog } from '../components/ReminderDialog';
@@ -38,7 +37,6 @@ export function DashboardPage() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [patientToEdit, setPatientToEdit] = useState(null);
-  const [decrementTarget, setDecrementTarget] = useState(null);
   const [renewTarget, setRenewTarget] = useState(null);
   const [reminderTarget, setReminderTarget] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -122,7 +120,7 @@ export function DashboardPage() {
       <PatientTable
         patients={patients}
         loading={loading}
-        onDecrement={setDecrementTarget}
+        onDecrement={(patient) => handleDecrement(patient)}
         onIncrement={handleIncrement}
         onRenew={setRenewTarget}
         onReminder={setReminderTarget}
@@ -140,16 +138,7 @@ export function DashboardPage() {
         onClose={() => setFormOpen(false)}
         onSubmit={handleFormSubmit}
         patientToEdit={patientToEdit}
-      />
-
-      <DecrementDialog
-        patient={decrementTarget}
-        open={!!decrementTarget}
-        onClose={() => setDecrementTarget(null)}
-        onConfirm={async () => {
-          await handleDecrement(decrementTarget);
-          setDecrementTarget(null);
-        }}
+        onDelete={setDeleteTarget}
       />
 
       <SameDayWarningDialog

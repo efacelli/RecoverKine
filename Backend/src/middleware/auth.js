@@ -30,8 +30,8 @@ const authMiddleware = (req, res, next) => {
 // seleccionado en el dialogo post-login. Se envia en el header X-Operador.
 const operadorMiddleware = (req, res, next) => {
   const operador = req.headers['x-operador'];
-  if (!operador || !['IGNACIO', 'MARIANO', 'TOBIAS'].includes(operador)) {
-    return next(new ApiError(400, 'Debe indicarse el operador actual (Ignacio, Mariano o Tobias).'));
+  if (!operador || !['IGNACIO', 'MARIANO', 'TOBIAS', 'ANTONELLA'].includes(operador)) {
+    return next(new ApiError(400, 'Debe indicarse el operador actual (Ignacio, Mariano, Tobias o Antonella).'));
   }
   req.operador = operador;
   next();

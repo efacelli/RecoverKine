@@ -7,7 +7,7 @@ const getHistory = asyncHandler(async (req, res) => {
 
   const where = {};
   if (patientId) where.patientId = patientId;
-  if (operador && ['IGNACIO', 'MARIANO', 'TOBIAS'].includes(operador)) where.operador = operador;
+  if (operador && ['IGNACIO', 'MARIANO', 'TOBIAS', 'ANTONELLA'].includes(operador)) where.operador = operador;
 
   if (desde || hasta) {
     where.fecha = {};

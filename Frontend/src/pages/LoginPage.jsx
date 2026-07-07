@@ -22,10 +22,10 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,#1c3a63_0%,#2c5486_45%,#1a2b52_100%)] px-4">
       <Card className="w-full max-w-sm animate-slide-up p-8">
         <div className="mb-6 flex flex-col items-center gap-3 text-center">
-          <img src="/logo-recover.svg" alt="RECOVER" className="h-14 w-14 rounded-xl shadow-soft" />
-          <div>
-            <h1 className="text-xl font-semibold">RECOVER</h1>
-            <p className="text-sm text-muted-foreground">Centro de Rehabilitacion y Readaptacion Fisica</p>
+          <img src="/logo-recover-full.png" alt="RECOVER" className="h-28 w-28 rounded-xl bg-white object-contain p-2 shadow-soft" />
+          <div className="sr-only">
+            <h1>RECOVER</h1>
+            <p>Centro de Rehabilitacion y Readaptacion Fisica</p>
           </div>
         </div>
 

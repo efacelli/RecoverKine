@@ -14,6 +14,7 @@ const OPERADORES = [
   { value: 'IGNACIO', label: 'Ignacio' },
   { value: 'MARIANO', label: 'Mariano' },
   { value: 'TOBIAS', label: 'Tobias' },
+  { value: 'ANTONELLA', label: 'Antonella' },
 ];
 
 export function Navbar({ search, onSearchChange }) {
@@ -63,7 +64,7 @@ export function Navbar({ search, onSearchChange }) {
     <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2.5">
-          <img src="/logo-recover.svg" alt="RECOVER" className="h-9 w-9 rounded-md" />
+          <img src="/logo-recover-icon.png" alt="RECOVER" className="h-9 w-9 rounded-md object-contain bg-white" />
           <div className="hidden sm:block">
             <p className="text-sm font-semibold leading-tight text-foreground">RECOVER</p>
             <p className="text-[11px] leading-tight text-muted-foreground">
