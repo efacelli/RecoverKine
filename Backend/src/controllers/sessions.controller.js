@@ -12,6 +12,9 @@ const calcularNuevoEstado = (sesionesRestantes, estadoActual) => {
 // POST /api/sessions/:patientId/decrement
 // body: { forzar: boolean } -> forzar=true permite descontar aunque ya haya un
 // descuento registrado hoy (segunda confirmacion del dialogo de advertencia)
+// POST /api/sessions/:patientId/decrement
+// body: { forzar: boolean } -> forzar=true permite descontar aunque ya haya un
+// descuento registrado hoy (segunda confirmacion del dialogo de advertencia)
 const decrementSession = asyncHandler(async (req, res) => {
   const { patientId } = req.params;
   const forzar = req.body?.forzar === true;
@@ -33,6 +36,7 @@ const decrementSession = asyncHandler(async (req, res) => {
     if (yaDescontadoHoy) {
       // Se devuelve 409 con una bandera especial para que el frontend
       // muestre el dialogo de advertencia en rojo.
+      // !!! NOTA: Aquí frena la ejecución, NO RESTA NADA en la base de datos todavía !!!
       return res.status(409).json({
         success: false,
         requiresConfirmation: true,
@@ -40,6 +44,8 @@ const decrementSession = asyncHandler(async (req, res) => {
       });
     }
   }
+
+  // --- SI LLEGA ACÁ (ES PRIMERA VEZ O VIENE CON FORZAR = TRUE): SE EJECUTA LA RESTA ---
 
   const nuevasRestantes = patient.sesionesRestantes - 1;
   const nuevoEstado = calcularNuevoEstado(nuevasRestantes, patient.estado);
@@ -76,7 +82,8 @@ const decrementSession = asyncHandler(async (req, res) => {
     });
   }
 
-  res.json({ success: true, data: updatedPatient, movementId: movement.id });
+  // Respondemos al frontend con éxito y el estado 200 implícito
+  return res.json({ success: true, data: updatedPatient, movementId: movement.id });
 });
 
 // POST /api/sessions/:patientId/increment
