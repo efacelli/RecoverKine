@@ -1,0 +1,101 @@
+// Prisma Schema - RECOVER Centro de Rehabilitacion y Readaptacion Fisica
+// Base de datos: Neon PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------
+// Enums
+// -----------------------------
+
+enum Operador {
+  IGNACIO
+  MARIANO
+  TOBIAS
+}
+
+enum EstadoPaciente {
+  ACTIVO
+  INACTIVO
+  TRATAMIENTO_COMPLETADO
+}
+
+enum TipoMovimientoSesion {
+  DESCUENTO
+  SUMA
+  RENOVACION
+}
+
+// -----------------------------
+// Modelos
+// -----------------------------
+
+// Unico usuario del sistema (login con usuario/contrasena)
+model Admin {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Patient {
+  id                   String         @id @default(uuid())
+  nombre               String
+  apellido             String
+  obraSocial           String
+  tipoLesion           String
+  sesionesAutorizadas  Int            @default(0)
+  sesionesRestantes    Int            @default(0)
+  estado               EstadoPaciente @default(ACTIVO)
+  observaciones        String?        @db.Text
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+
+  movimientos          SessionMovement[]
+  historial            HistoryLog[]
+
+  @@index([nombre, apellido])
+  @@map("patients")
+}
+
+// Cada movimiento de sesion (suma, descuento, renovacion) con fecha y hora
+model SessionMovement {
+  id         String                @id @default(uuid())
+  patientId  String
+  patient    Patient               @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  tipo       TipoMovimientoSesion
+  operador   Operador
+  cantidad   Int                   @default(1)
+  fecha      DateTime              @default(now()) // fecha+hora exacta del movimiento
+  diaClave   String                // 'YYYY-MM-DD' en zona horaria local, para validar "mismo dia"
+  createdAt  DateTime              @default(now())
+
+  @@index([patientId, diaClave])
+  @@map("session_movements")
+}
+
+// Historial global de TODAS las acciones del sistema
+model HistoryLog {
+  id            String    @id @default(uuid())
+  fecha         DateTime  @default(now())
+  operador      Operador
+  patientId     String?
+  patient       Patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  pacienteNombre String?  // snapshot del nombre completo por si el paciente se elimina
+  accion        String
+  detalle       String?   @db.Text
+
+  @@index([operador])
+  @@index([patientId])
+  @@index([fecha])
+  @@map("history_logs")
+}
