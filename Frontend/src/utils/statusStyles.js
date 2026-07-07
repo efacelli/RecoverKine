@@ -18,6 +18,23 @@ export const ESTADO_LABELS = {
   TRATAMIENTO_COMPLETADO: 'Tratamiento completado',
 };
 
+export const ESTADO_PAGO_LABELS = {
+  POR_SESION: 'Por sesion',
+  PAGADO: 'Pagado',
+  IMPAGO: 'Impago',
+};
+
+export function getEstadoPagoBadgeClasses(estadoPago) {
+  switch (estadoPago) {
+    case 'PAGADO':
+      return 'bg-success/10 text-success border-success/30';
+    case 'IMPAGO':
+      return 'bg-destructive/10 text-destructive border-destructive/30';
+    case 'POR_SESION':
+    default:
+      return 'bg-info/10 text-info border-info/30';
+  }
+}
 export function getEstadoBadgeClasses(estado) {
   switch (estado) {
     case 'ACTIVO':

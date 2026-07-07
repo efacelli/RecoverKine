@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
-import { getSessionColorClasses, getEstadoBadgeClasses, ESTADO_LABELS } from '../utils/statusStyles';
+import { getSessionColorClasses, getEstadoBadgeClasses, ESTADO_LABELS, getEstadoPagoBadgeClasses, ESTADO_PAGO_LABELS } from '../utils/statusStyles';
 import { cn } from '../utils/cn';
 
 export function PatientTable({
@@ -65,6 +65,7 @@ export function PatientTable({
               <th className="px-4 py-3 text-center font-medium">Autorizadas</th>
               <th className="px-4 py-3 text-center font-medium">Restantes</th>
               <th className="px-4 py-3 font-medium">Estado</th>
+              <th className="px-4 py-3 font-medium">Pago</th>
               <th className="px-4 py-3 font-medium">Observaciones</th>
               <th className="px-4 py-3 text-right font-medium">Acciones</th>
             </tr>
@@ -110,6 +111,11 @@ export function PatientTable({
                 <td className="px-4 py-3">
                   <Badge className={getEstadoBadgeClasses(patient.estado)}>
                     {ESTADO_LABELS[patient.estado]}
+                  </Badge>
+                </td>
+                <td className="px-4 py-3">
+                  <Badge className={getEstadoPagoBadgeClasses(patient.estadoPago)}>
+                    {ESTADO_PAGO_LABELS[patient.estadoPago] || 'Por sesion'}
                   </Badge>
                 </td>
                 <td className="max-w-[180px] truncate px-4 py-3 text-muted-foreground" title={patient.observaciones}>

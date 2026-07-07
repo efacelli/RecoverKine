@@ -3,6 +3,7 @@ import { UserPlus, Trash2 } from 'lucide-react';
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/Dialog';
 import { Button } from './ui/Button';
 import { Input, Label, Textarea } from './ui/Input';
+import { Select } from './ui/Select';
 import { useToast } from '../contexts/ToastContext';
 
 const EMPTY_FORM = {
@@ -12,6 +13,7 @@ const EMPTY_FORM = {
   tipoLesion: '',
   sesionesAutorizadas: '',
   observaciones: '',
+  estadoPago: 'POR_SESION',
 };
 
 export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit, onDelete }) {
@@ -31,6 +33,7 @@ export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit, onDe
               tipoLesion: patientToEdit.tipoLesion,
               sesionesAutorizadas: patientToEdit.sesionesAutorizadas,
               observaciones: patientToEdit.observaciones || '',
+              estadoPago: patientToEdit.estadoPago || 'POR_SESION',
             }
           : EMPTY_FORM
       );
@@ -59,6 +62,7 @@ export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit, onDe
           obraSocial: form.obraSocial,
           tipoLesion: form.tipoLesion,
           observaciones: form.observaciones,
+          estadoPago: form.estadoPago,
         });
         showToast('Paciente actualizado correctamente.', 'success');
       } else {
@@ -115,6 +119,15 @@ export function PatientFormDialog({ open, onClose, onSubmit, patientToEdit, onDe
             onChange={handleChange('tipoLesion')}
             placeholder="Ej: Lumbalgia, Rotura de LCA, Esguince de tobillo..."
           />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="estadoPago">Pago</Label>
+          <Select id="estadoPago" value={form.estadoPago} onChange={handleChange('estadoPago')}>
+            <option value="POR_SESION">Por sesion</option>
+            <option value="PAGADO">Pagado</option>
+            <option value="IMPAGO">Impago</option>
+          </Select>
         </div>
 
         {!isEditing && (

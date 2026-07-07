@@ -21,6 +21,12 @@ enum Operador {
   ANTONELLA
 }
 
+enum EstadoPago {
+  POR_SESION
+  PAGADO
+  IMPAGO
+}
+
 enum EstadoPaciente {
   ACTIVO
   INACTIVO
@@ -57,6 +63,7 @@ model Patient {
   sesionesAutorizadas  Int            @default(0)
   sesionesRestantes    Int            @default(0)
   estado               EstadoPaciente @default(ACTIVO)
+  estadoPago           EstadoPago     @default(POR_SESION)
   observaciones        String?        @db.Text
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt

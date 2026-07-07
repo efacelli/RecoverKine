@@ -62,7 +62,7 @@ const getPatientById = asyncHandler(async (req, res) => {
 
 // POST /api/patients
 const createPatient = asyncHandler(async (req, res) => {
-  const { nombre, apellido, obraSocial, tipoLesion, sesionesAutorizadas, observaciones } = req.body;
+  const { nombre, apellido, obraSocial, tipoLesion, sesionesAutorizadas, observaciones, estadoPago } = req.body;
 
   if (!nombre || !apellido || !obraSocial || !tipoLesion || sesionesAutorizadas === undefined) {
     throw new ApiError(400, 'Faltan campos obligatorios: nombre, apellido, obra social, tipo de lesion y sesiones autorizadas.');
@@ -94,6 +94,7 @@ const createPatient = asyncHandler(async (req, res) => {
       sesionesRestantes: Number(sesionesAutorizadas),
       observaciones: observaciones?.trim() || null,
       estado: 'ACTIVO',
+      estadoPago: estadoPago && ['POR_SESION', 'PAGADO', 'IMPAGO'].includes(estadoPago) ? estadoPago : 'POR_SESION',
     },
   });
 
@@ -113,7 +114,7 @@ const createPatient = asyncHandler(async (req, res) => {
 // PUT /api/patients/:id
 const updatePatient = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { nombre, apellido, obraSocial, tipoLesion, observaciones, estado } = req.body;
+  const { nombre, apellido, obraSocial, tipoLesion, observaciones, estado, estadoPago } = req.body;
 
   const existing = await prisma.patient.findUnique({ where: { id } });
   if (!existing) throw new ApiError(404, 'Paciente no encontrado.');
@@ -128,6 +129,9 @@ const updatePatient = asyncHandler(async (req, res) => {
   if (estado !== undefined && estado !== existing.estado) {
     cambios.push(`Estado: "${existing.estado}" -> "${estado}"`);
   }
+  if (estadoPago !== undefined && estadoPago !== existing.estadoPago) {
+    cambios.push(`Estado de pago: "${existing.estadoPago}" -> "${estadoPago}"`);
+  }
 
   const patient = await prisma.patient.update({
     where: { id },
@@ -138,6 +142,7 @@ const updatePatient = asyncHandler(async (req, res) => {
       tipoLesion: tipoLesion?.trim() ?? existing.tipoLesion,
       observaciones: observaciones !== undefined ? observaciones?.trim() || null : existing.observaciones,
       estado: estado ?? existing.estado,
+      estadoPago: estadoPago && ['POR_SESION', 'PAGADO', 'IMPAGO'].includes(estadoPago) ? estadoPago : existing.estadoPago,
     },
   });
 
