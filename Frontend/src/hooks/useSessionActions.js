@@ -26,27 +26,37 @@ export function useSessionActions({ onUpdated }) {
   }, [lastMovement]);
 
   const handleDecrement = useCallback(
-    async (patient, forzar = false) => {
-      try {
-        const res = await decrementSession(patient.id, forzar);
-        onUpdated?.(res.data);
-        registerUndo(res.movementId);
-        showToast('Sesion descontada correctamente.', 'success');
-        setPendingWarning(null);
-      } catch (err) {
-        // El backend responde 409 + requiresConfirmation cuando ya se
-        // registro una sesion hoy para este paciente. Esto NO es un error,
-        // es la senal para abrir el dialogo de advertencia (rojo) y dejar
-        // que el usuario decida si quiere descontar igual.
-        if (err instanceof ApiClientError && err.requiresConfirmation) {
-          setPendingWarning({ patient });
-          return;
-        }
-        showToast(err.message, 'error');
+  async (patient, forzar = false) => {
+    // 1. ACTUALIZACIÓN OPTIMISTA: Restamos en la pantalla al toque para que sea fluido
+    if (patient.sesionesRestantes > 0) {
+      onUpdated?.({
+        ...patient,
+        sesionesRestantes: patient.sesionesRestantes - 1
+      });
+    }
+
+    try {
+      // 2. Le avisamos al servidor en Render por detrás
+      const res = await decrementSession(patient.id, forzar);
+      registerUndo(res.movementId);
+      showToast('Sesion descontada correctamente.', 'success');
+      setPendingWarning(null);
+    } catch (err) {
+      // 3. Si el backend responde 409 (Ya registró hoy), no hacemos nada visual 
+      // porque la pantalla YA se actualizó en el paso 1. Solo abrimos la advertencia.
+      if (err instanceof ApiClientError && err.requiresConfirmation) {
+        setPendingWarning({ patient });
+        return;
       }
-    },
-    [onUpdated, registerUndo, showToast]
-  );
+
+      // 4. PASO DE EMERGENCIA: Si el error fue real (ej: se cayó internet o dio error 500)
+      // devolvemos al paciente a su estado original para que no muestre datos falsos.
+      onUpdated?.(patient); 
+      showToast(err.message, 'error');
+    }
+  },
+  [onUpdated, registerUndo, showToast]
+);
 
   const handleIncrement = useCallback(
     async (patient) => {
