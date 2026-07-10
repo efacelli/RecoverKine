@@ -28,6 +28,7 @@ export function DashboardPage() {
     setSearch,
     clearFilters,
     refresh,
+    patchPatient,
     createPatient,
     updatePatient,
     deletePatient,
@@ -49,7 +50,7 @@ export function DashboardPage() {
     handleIncrement,
     handleRenew,
     handleUndo,
-  } = useSessionActions({ onUpdated: refresh });
+  } = useSessionActions({ onUpdated: patchPatient });
 
   const handleFormSubmit = (idOrPayload, maybePayload) => {
     if (maybePayload) return updatePatient(idOrPayload, maybePayload);

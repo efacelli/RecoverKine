@@ -55,6 +55,18 @@ export function usePatients() {
     await Promise.all([loadPatients(), loadStats()]);
   }, [loadPatients, loadStats]);
 
+  // Actualiza un solo paciente en el estado local al instante (usado despues
+  // de sumar/restar/renovar sesiones), sin esperar un refetch completo de la
+  // lista. Evita que la UI se quede con el numero viejo si el refetch de
+  // fondo tarda o falla por una red inestable.
+  const patchPatient = useCallback((updatedPatient) => {
+    if (!updatedPatient?.id) return;
+    setPatients((prev) => prev.map((p) => (p.id === updatedPatient.id ? updatedPatient : p)));
+    // Las estadisticas (tarjetas de arriba) se recalculan en segundo plano;
+    // si falla, no afecta el numero ya actualizado en la tabla.
+    loadStats().catch(() => {});
+  }, [loadStats]);
+
   const toggleRango = (rango) => {
     setRangoFilter((prev) => (prev === rango ? null : rango));
     setEstadoFilter('TODOS');
@@ -96,6 +108,7 @@ export function usePatients() {
     setSearch,
     clearFilters,
     refresh,
+    patchPatient,
     createPatient,
     updatePatient,
     deletePatient,
