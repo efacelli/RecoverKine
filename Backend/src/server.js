@@ -12,25 +12,11 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
-
-
-app.use(cors({
-  origin: '*', // Permite tu dominio de Vercel
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'x-operador' // 
-  ]
-}));
-
-
 // Seguridad y utilidades base
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'https://recover-kine.vercel.app',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
   })
 );
@@ -40,6 +26,13 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Evitar que el navegador o cualquier proxy intermedio cachee las respuestas
+// del API (causaba que los datos se vieran desactualizados hasta recargar).
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

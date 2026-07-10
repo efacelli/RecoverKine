@@ -23,6 +23,7 @@ async function request(path, { method = 'GET', body, headers = {}, raw = false }
     method,
     headers: finalHeaders,
     body: body ? JSON.stringify(body) : undefined,
+    cache: 'no-store',
   });
 
   if (raw) return response;
