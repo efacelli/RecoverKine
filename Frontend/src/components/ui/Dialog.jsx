@@ -24,7 +24,7 @@ export function Dialog({ open, onClose, children, className }) {
       />
       <div
         className={cn(
-          'relative w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-soft-lg animate-scale-in',
+          'relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl border border-border bg-card p-6 shadow-soft-lg animate-scale-in',
           className
         )}
       >
