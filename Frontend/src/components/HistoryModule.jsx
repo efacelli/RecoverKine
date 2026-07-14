@@ -6,16 +6,27 @@ import { Button } from './ui/Button';
 import { History as HistoryIcon } from 'lucide-react';
 
 export function HistoryModule() {
-  const { logs, loading, filters, setFilters } = useHistory();
+  const { logs, loading, filters, setFilters, pacienteInput, setPacienteInput } = useHistory();
 
   const handleChange = (field) => (e) => setFilters((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const clearFilters = () => setFilters({ patientId: '', operador: '', desde: '', hasta: '' });
+  const clearFilters = () => {
+    setFilters({ patientId: '', operador: '', desde: '', hasta: '', paciente: '' });
+    setPacienteInput('');
+  };
 
   return (
     <div className="space-y-4">
       <Card className="p-4">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
+          <div className="space-y-1.5">
+            <Label>Paciente</Label>
+            <Input
+              value={pacienteInput}
+              onChange={(e) => setPacienteInput(e.target.value)}
+              placeholder="Ej: Juan"
+            />
+          </div>
           <div className="space-y-1.5">
             <Label>Usuario</Label>
             <Select value={filters.operador} onChange={handleChange('operador')}>
@@ -23,7 +34,7 @@ export function HistoryModule() {
               <option value="IGNACIO">Ignacio</option>
               <option value="MARIANO">Mariano</option>
               <option value="TOBIAS">Tobias</option>
-              <option value="ANTONELLA">Antonella</option>
+              <option value="ANTONELA">Antonela</option>
             </Select>
           </div>
           <div className="space-y-1.5">

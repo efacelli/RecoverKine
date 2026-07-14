@@ -1,13 +1,18 @@
 const prisma = require('../config/prisma');
 const { asyncHandler } = require('../utils/helpers');
 
-// GET /api/history?patientId=&operador=&desde=&hasta=
+// GET /api/history?patientId=&operador=&desde=&hasta=&paciente=
 const getHistory = asyncHandler(async (req, res) => {
-  const { patientId, operador, desde, hasta } = req.query;
+  const { patientId, operador, desde, hasta, paciente } = req.query;
 
   const where = {};
   if (patientId) where.patientId = patientId;
-  if (operador && ['IGNACIO', 'MARIANO', 'TOBIAS', 'ANTONELLA'].includes(operador)) where.operador = operador;
+  if (operador && ['IGNACIO', 'MARIANO', 'TOBIAS', 'ANTONELA'].includes(operador)) where.operador = operador;
+
+  // Busqueda parcial por nombre de paciente (ej: "juan" encuentra "Juan Perez")
+  if (paciente) {
+    where.pacienteNombre = { contains: paciente.trim(), mode: 'insensitive' };
+  }
 
   if (desde || hasta) {
     where.fecha = {};
