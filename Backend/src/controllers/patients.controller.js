@@ -28,7 +28,7 @@ const getPatients = asyncHandler(async (req, res) => {
 
   const patients = await prisma.patient.findMany({
     where,
-    orderBy: [{ apellido: 'asc' }, { nombre: 'asc' }],
+    orderBy: { createdAt: 'desc' },
   });
 
   res.json({ success: true, data: patients });
